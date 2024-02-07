@@ -54,7 +54,7 @@ class SEALIONTokenizer(PreTrainedTokenizer):
         unk_token="<unk>",
         bos_token=None,
         eos_token="<|endoftext|>",
-        pad_token=None,
+        pad_token="<|padding|>",
         sp_model_kwargs: Optional[Dict[str, Any]] = None,
         add_bos_token=False,
         add_eos_token=False,
