@@ -22,7 +22,6 @@ import types
 import numpy as np
 import torch
 import shutil
-from pathlib import Path
 
 seed = 1234
 random.seed(seed)
@@ -435,7 +434,6 @@ def convert_checkpoint_from_megatron_to_transformers(args):
     hidden_size_per_head = config.hidden_size // config.num_attention_heads
     num_layers = config.num_hidden_layers // pp_size
 
-    seen_layers = set()
     for pp_rank in range(pp_size):
         if pp_size > 0:
             print(f"Converting pipeline parallel rank {pp_rank}")
@@ -466,15 +464,6 @@ def convert_checkpoint_from_megatron_to_transformers(args):
 
             # The name of the layer.
             layer_name = f"model.layers.{layer_idx}"
-
-            if layer_idx not in seen_layers:
-                # MTDS rotary_emb shape is [seq_len, 1, 1, head_dim]
-                # HF rotary_emb shape is [head_dim]
-                # MTDS rotary_emb value appear to be emb_vector * arange(seq_len)
-                # where emb_vector shape is [head_dim]
-                output_state_dict[f"{layer_name}.self_attn.rotary_emb.inv_freq"] =\
-                    tp_state_dicts[0]["args"].rotary_pos_emb[1, 0, 0].clone()
-                seen_layers.add(layer_idx)
 
             if op_name + "." + weight_or_bias not in tensor_parallel_params_mg:
                 params = val.to(dtype)
@@ -647,7 +636,7 @@ def convert_checkpoint_from_megatron_to_transformers(args):
     }
     with open(tokenizer_config_path, 'w') as f:
         json.dump(json_config, f, indent=2, sort_keys=True)
-    shutil.copy(Path(__file__).resolve().parents[2] / 'megatron/tokenizer/sealion_tokenization.py', args.save_path)
+    shutil.copy('megatron/tokenizer/sealion_tokenization.py', args.save_path)
 
 def main():
     parser = argparse.ArgumentParser()
