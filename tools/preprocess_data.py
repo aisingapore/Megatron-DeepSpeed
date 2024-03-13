@@ -190,11 +190,21 @@ def get_args():
                        help='Keep newlines between sentences when splitting.')
 
     group = parser.add_argument_group(title='tokenizer')
-    group.add_argument('--tokenizer-type', type=str, required=True,
-                       choices=['BertWordPieceLowerCase','BertWordPieceCase',
-                                'GPT2BPETokenizer', 'SentencePieceTokenizer',
-                                'GPTSentencePieceTokenizer', 'NullTokenizer'],
-                       help='What type of tokenizer to use.')
+    group.add_argument(
+        "--tokenizer-type",
+        type=str,
+        required=True,
+        choices=[
+            "BertWordPieceLowerCase",
+            "BertWordPieceCase",
+            "GPT2BPETokenizer",
+            "SentencePieceTokenizer",
+            "GPTSentencePieceTokenizer",
+            "NullTokenizer",
+            "SeaLionTokenizer",
+        ],
+        help="What type of tokenizer to use.",
+    )
     group.add_argument('--tokenizer-model', type=str, default=None,
                        help='YTTM tokenizer model.')
     group.add_argument('--vocab-file', type=str, default=None,
