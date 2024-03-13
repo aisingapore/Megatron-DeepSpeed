@@ -43,7 +43,6 @@ def add_checkpointing_args(parser):
     )
     parser.add_argument("--load_path", type=str, required=True, help="Path to the checkpoint to convert.")
     parser.add_argument("--save_path", type=str, required=True, help="Path to the converted checkpoint.")
-    parser.add_argument("--model_name", type=str, required=True, help="model name")
     parser.add_argument("--print-checkpoint-structure", action="store_true")
     return parser
 

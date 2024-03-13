@@ -13,25 +13,27 @@
 # limitations under the License.
 
 import argparse
-import random
 import json
 import os
+import random
 import re
+import shutil
 import sys
 import types
+
 import numpy as np
 import torch
-import shutil
 
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 torch.manual_seed(seed)
 
+import megatron
+from megatron.tokenizer.sealion_tokenization import SEALIONTokenizer
 from transformers import AutoTokenizer, GPT2Config, LlamaConfig
 from transformers.modeling_utils import WEIGHTS_INDEX_NAME, WEIGHTS_NAME, shard_checkpoint
 
-from megatron.tokenizer.sealion_tokenization import SEALIONTokenizer
 
 def add_checkpointing_args(parser):
     parser.add_argument("--megatron-path", type=str, default=None, help="Base directory of Megatron repository")
@@ -636,7 +638,8 @@ def convert_checkpoint_from_megatron_to_transformers(args):
     }
     with open(tokenizer_config_path, 'w') as f:
         json.dump(json_config, f, indent=2, sort_keys=True)
-    shutil.copy('megatron/tokenizer/sealion_tokenization.py', args.save_path)
+    shutil.copy(os.path.join(megatron.__path__[0], "tokenizer", "sealion_tokenization.py"), args.save_path)
+
 
 def main():
     parser = argparse.ArgumentParser()
